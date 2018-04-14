@@ -1,0 +1,30 @@
+remote_file(
+  name = 'pytorch-src',
+  url = 'https://github.com/pytorch/pytorch/archive/v0.3.1.zip',
+  sha1 = '21b085b756aaab52bb9c2a3f71193026ed3b4d04',
+  type = 'exploded_zip',
+)
+
+genrule(
+  name = 'pytorch-build',
+  cmd = 'echo "Before buck create git repo remote_file, this is one of the weird thing we can do ¯\_(ツ)_/¯" && \
+         cd ./ && \
+         git clone https://github.com/pytorch/pytorch pytorch --recursive && \
+         git submodule update --init && \
+         install -d ./pytorch/build && \
+         cd ./pytorch/build && \
+         cmake -DCMAKE_INSTALL_PREFIX=$OUT .. && \
+         make && \
+         make install',
+  out = '.',
+)
+
+prebuilt_cxx_library(
+  name = 'caffe2',
+  lib_dir = '$(location :pytorch-build)/lib',
+  include_dirs = ['$(location :pytorch-build)/include'],
+    visibility = [
+    'PUBLIC',
+  ],
+)
+

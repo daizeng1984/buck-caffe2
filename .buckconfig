@@ -1,0 +1,4 @@
+[cxx]
+    enable_deprecated_prebuilt_cxx_library_api = true
+    cxxflags = -std=c++11
+    linker_platform=MACOS
